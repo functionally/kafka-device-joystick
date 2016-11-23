@@ -1,7 +1,7 @@
 name:                kafka-device-joystick
 version:             0.1.1.0
 synopsis:            Linux joystick events via a Kafka message broker
-description:         This package contains functions for passing Linux joystick events to topics on a Kafka message broker.  The joystick's driver must conform to the Linux Joystick API \<<https://www.kernel.org/doc/Documentation/input/joystick-api.txt>\>.
+description:         This package contains functions for passing Linux joystick events to topics on a Kafka message broker \<<https://kafka.apache.org/>\>.  The joystick's driver must conform to the Linux Joystick API \<<https://www.kernel.org/doc/Documentation/input/joystick-api.txt>\>.  Also see https://hackage.haskell.org/package/kafka-device/.
 license:             MIT
 license-file:        LICENSE
 author:              Brian W Bush <consult@brianwbush.info>
