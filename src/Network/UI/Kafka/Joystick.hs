@@ -6,7 +6,7 @@ Maintainer  :  Brian W Bush <consult@brianwbush.info>
 Stability   :  Experimental
 Portability :  Linux
 
-Producer of events from a Linux joystick, which must conform to the Linux Joystick API \<<https://www.kernel.org/doc/Documentation/input/joystick-api.txt>\>.
+Produce events for a Kafka topic from a Linux joystick, which must conform to the Linux Joystick API \<<https://www.kernel.org/doc/Documentation/input/joystick-api.txt>\>.
 -}
 
 
@@ -30,7 +30,7 @@ import System.Hardware.LinuxJoystick (Joystick(..), interpretJoystick, maxValue)
 import System.IO (IOMode(ReadMode), hClose, openFile)
 
 
--- | Produce events from a Linux Joystick.
+-- | Produce events for a Kafka topic from a Linux Joystick.
 joystickLoop :: FilePath                    -- ^ The path to the joystick device, e.g. "\/dev\/input\/js0".
              -> KafkaClientId               -- ^ A Kafka client identifier for the producer.
              -> KafkaAddress                -- ^ The address of the Kafka broker.
@@ -54,7 +54,7 @@ joystickLoop path client address topic sensor =
       )
 
 
--- | Translate a Linux Joystics event into events for Kafka.
+-- | Translate a Linux Joystic event into events for Kafka.
 translate :: Joystick -- ^ The joystick event.
           -> [Event]  -- ^ The corresponding events for Kafka.
 translate Joystick{..} =

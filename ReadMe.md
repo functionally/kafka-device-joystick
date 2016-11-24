@@ -1,7 +1,6 @@
 Linux joystick events via a Kafka message broker
 ================================================
 
-
 This package contains functions for passing [Linux joystick](https://www.kernel.org/doc/Documentation/input/joystick-api.txt) events to topics on a [Kafka message broker](https://kafka.apache.org/).
 
 

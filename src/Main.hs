@@ -6,11 +6,8 @@ Maintainer  :  Brian W Bush <consult@brianwbush.info>
 Stability   :  Experimental
 Portability :  Linux
 
-Producer of events from a Linux joystick.
+Produce events for a Kafka topic from a Linux joystick.
 -}
-
-
-{-# LANGUAGE OverloadedStrings #-}
 
 
 module Main (
