@@ -1,5 +1,5 @@
 {-|
-Module      :  System.Hardware.LinuxJoystick
+Module      :  System.Hardware.Linux.Joystick
 Copyright   :  (c) 2016 Brian W Bush
 License     :  MIT
 Maintainer  :  Brian W Bush <consult@brianwbush.info>
@@ -14,11 +14,12 @@ Interpret events from a Linux joystick, which must conform to the Linux Joystick
 {-# LANGUAGE RecordWildCards #-}
 
 
-module System.Hardware.LinuxJoystick (
+module System.Hardware.Linux.Joystick (
 -- * Types and values
   Joystick(..)
 , minValue
 , maxValue
+, byteLength
 -- * Event handling
 , interpretJoystick
 , readJoystick
@@ -26,10 +27,13 @@ module System.Hardware.LinuxJoystick (
 
 
 import Data.Aeson.Types (FromJSON, ToJSON)
-import Data.Binary (Binary)
+import Data.Binary (Binary(..), decode, encode)
+import Data.Binary.Get (getWord16host, getWord32host)
+import Data.Binary.Put (putWord16host, putWord32host)
+import Data.Bits ((.&.), complement, shift)
+import Data.ByteString.Lazy.Char8 as BS (ByteString, length, readFile, splitAt)
 import Data.Serialize (Serialize)
-import Data.ByteString.Lazy.Char8 as BS (ByteString, length, readFile, splitAt, unpack)
-import Data.Bits ((.&.), (.|.), complement, shift)
+import Data.Word (Word8, Word16, Word32)
 import GHC.Generics (Generic)
 
 
@@ -41,6 +45,42 @@ minValue = - maxValue
 -- | The maximum for 'value'.
 maxValue :: Int
 maxValue = 32767
+
+
+-- | The number of bytes in a joystick event.
+byteLength :: Integral a => a
+byteLength =
+  fromIntegral
+    . BS.length
+    . encode
+    $ RawJoystick 0 0 0 0
+
+
+
+data RawJoystick =
+  RawJoystick
+  {
+    rawTime :: Word32
+  , rawValue :: Word16
+  , rawType  :: Word8
+  , rawNumber :: Word8
+  }
+  deriving (Eq, Ord, Read, Show)
+
+instance Binary RawJoystick where
+  get =
+    do
+      rawTime   <- getWord32host
+      rawValue  <- getWord16host
+      rawType   <- get
+      rawNumber <- get
+      return RawJoystick{..}
+  put RawJoystick{..} =
+    do
+      putWord32host rawTime
+      putWord16host rawValue
+      put rawType
+      put rawNumber
 
 
 -- | Joystick data. See \<<https://www.kernel.org/doc/Documentation/input/joystick-api.txt>\> for details.
@@ -65,31 +105,31 @@ instance Binary Joystick
 instance Serialize Joystick
 
 
--- | Interpret Limux Joystick bytes accoding to \<<https://www.kernel.org/doc/Documentation/input/joystick-api.txt>\>.
+-- | Interpret Linux Joystick bytes accoding to \<<https://www.kernel.org/doc/Documentation/input/joystick-api.txt>\>.
 interpretJoystick :: ByteString -- ^ The eight bytes.
                   -> Joystick   -- ^ The corresponding joystick data.
-interpretJoystick x
-  | BS.length x /= 8 = error "LinuxJoystick.interpretJoystick: eight bytes required."
-  | otherwise        = let
-                        [x0, x1, x2, x3, x4, x5, x6, x7] = fromEnum <$> unpack x
-                        timestamp = toEnum $ ((x3 `shift` 8 .|. x2) `shift` 8 .|. x1) `shift` 8 .|. x0
-                        value = twosComplement $ x5 `shift` 8 .|. x4
-                        typ = x6
-                        number = x7
-                        button = 0x01 .&. typ /= 0
-                        axis = 0x02 .&. typ /= 0
-                        initial = 0x80 .&. typ /= 0
-                      in
-                        Joystick{..}
+interpretJoystick x =
+  let
+    RawJoystick{..} = decode x
+    timestamp = fromIntegral rawTime
+    value = twosComplement rawValue
+    number = fromIntegral rawNumber
+    typ = fromIntegral rawType :: Int
+    button = 0x01 .&. typ /= 0
+    axis = 0x02 .&. typ /= 0
+    initial = 0x80 .&. typ /= 0
+  in
+    Joystick{..}
 
 
 -- | Decode a two's complement.
-twosComplement :: Int -- ^ The two's complement.
-               -> Int -- ^ THe corresponding integer.
+twosComplement :: Word16 -- ^ The two's complement.
+               -> Int    -- ^ The corresponding integer.
 twosComplement x =
-  fromEnum (x .&. complement mask) - fromEnum (x .&. mask)
+  fromIntegral (x' .&. complement mask) - fromIntegral (x' .&. mask)
     where
-      mask = 0x8000
+      x' = fromIntegral x :: Int
+      mask = 1 `shift` 15
 
 
 -- | Read a stream of joystick data.

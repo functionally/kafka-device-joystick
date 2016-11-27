@@ -26,7 +26,7 @@ import Network.Kafka (KafkaAddress, KafkaClientId)
 import Network.Kafka.Protocol (TopicName)
 import Network.UI.Kafka (ExitAction, LoopAction, Sensor, producerLoop)
 import Network.UI.Kafka.Types (Button(..), Event(..), Toggle(..))
-import System.Hardware.LinuxJoystick (Joystick(..), interpretJoystick, maxValue)
+import System.Hardware.Linux.Joystick (Joystick(..), byteLength, interpretJoystick, maxValue)
 import System.IO (IOMode(ReadMode), hClose, openFile)
 
 
@@ -44,7 +44,7 @@ joystickLoop path client address topic sensor =
       producerLoop client address topic sensor
         $ translate
         . interpretJoystick
-        <$> hGet joystick 8
+        <$> hGet joystick byteLength
     return
       (
         do
@@ -54,7 +54,7 @@ joystickLoop path client address topic sensor =
       )
 
 
--- | Translate a Linux Joystic event into events for Kafka.
+-- | Translate a Linux Joystick event into events for Kafka.
 translate :: Joystick -- ^ The joystick event.
           -> [Event]  -- ^ The corresponding events for Kafka.
 translate Joystick{..} =

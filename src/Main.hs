@@ -43,4 +43,4 @@ main =
               sensor
           result <- loop
           either print return result
-      _ -> putStrLn "USAGE: kafka-device-joystick client host port topic sensor"
+      _ -> putStrLn "USAGE: kafka-device-joystick device client host port topic sensor"
