@@ -44,7 +44,7 @@ minValue = - maxValue
 
 -- | The maximum for 'value'.
 maxValue :: Int
-maxValue = 32767
+maxValue = 1 `shift` 15 - 1
 
 
 -- | The number of bytes in a joystick event.
