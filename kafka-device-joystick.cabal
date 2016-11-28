@@ -12,8 +12,8 @@ build-type:          Simple
 cabal-version:       >= 1.10
 stability:           Experimental
 homepage:            https://bitbucket.org/functionally/kafka-device-joystick
-bug-reports:         https://bwbush.atlassian.net/projects/HKADEJO/issues/
-package-url:         https://bitbucket.org/functionally/kafka-device-joystick/downloads/kafka-device-joystick-0.1.4.0.tar.gz
+bug-reports:         https://bwbush.atlassian.net/projects/HKAFDEV/issues/
+package-url:         https://bitbucket.org/functionally/kafka-device-joystick/downloads/kafka-device-joystick-0.1.5.0.tar.gz
 
 extra-source-files:  ReadMe.md
 
