@@ -16,6 +16,7 @@ bug-reports:         https://bwbush.atlassian.net/projects/HKAFDEV/issues/
 package-url:         https://bitbucket.org/functionally/kafka-device-joystick/downloads/kafka-device-joystick-$version.tar.gz
 
 extra-source-files:  ReadMe.md
+                     sample.yaml
 
 source-repository head
   type: git
