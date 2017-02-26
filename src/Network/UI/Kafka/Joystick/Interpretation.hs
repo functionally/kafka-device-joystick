@@ -27,8 +27,8 @@ import System.IO (IOMode(ReadMode), hClose, openFile)
 
 
 -- | Interpret events from a Linux SpaceNav.
-joystickLoop :: Interpretation Double       -- ^ Instructions for interpretation.
-             -> IO (ExitAction, LoopAction) -- ^ Action to create the exit and loop actions.
+joystickLoop :: Interpretation FilePath Double -- ^ Instructions for interpretation.
+             -> IO (ExitAction, LoopAction)    -- ^ Action to create the exit and loop actions.
 joystickLoop interpretation@TrackInterpretation{..} =
   do
     let
@@ -36,7 +36,7 @@ joystickLoop interpretation@TrackInterpretation{..} =
       analogHandler _                                         = Nothing
       buttonHandler (Joystick _ pressed number True  False _) = Just (number, pressed /= 0)
       buttonHandler _                                         = Nothing
-    joystick <- openFile path ReadMode
+    joystick <- openFile device ReadMode
     (exit, loop) <-
       interpretationLoop analogHandler buttonHandler interpretation
         $ interpretJoystick <$> hGet joystick byteLength
