@@ -43,7 +43,7 @@ executable kafka-device-joystick
                ,    bytestring
                ,    cereal
                ,    kafka-device
-               ,    yaml
+               ,    yaml         >= 0.8.22
   hs-source-dirs:   src
   ghc-options:      -Wall -threaded
   default-language: Haskell2010
