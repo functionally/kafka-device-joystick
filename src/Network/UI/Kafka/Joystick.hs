@@ -1,6 +1,6 @@
 {-|
-Module      :  Network.UI.Kafka.Joystick
-Copyright   :  (c) 2016 Brian W Bush
+Module      :  $Header$
+Copyright   :  (c) 2016-17 Brian W Bush
 License     :  MIT
 Maintainer  :  Brian W Bush <consult@brianwbush.info>
 Stability   :  Experimental
@@ -22,9 +22,7 @@ module Network.UI.Kafka.Joystick (
 import Control.Monad (guard)
 import Data.ByteString.Lazy.Char8 (hGet)
 import Data.Maybe (catMaybes)
-import Network.Kafka (KafkaAddress, KafkaClientId)
-import Network.Kafka.Protocol (TopicName)
-import Network.UI.Kafka (ExitAction, LoopAction, Sensor, producerLoop)
+import Network.UI.Kafka (ExitAction, LoopAction, TopicConnection, Sensor, producerLoop)
 import Network.UI.Kafka.Types (Button(..), Event(..), Toggle(..))
 import System.Hardware.Linux.Joystick (Joystick(..), byteLength, interpretJoystick, maxValue)
 import System.IO (IOMode(ReadMode), hClose, openFile)
@@ -32,16 +30,14 @@ import System.IO (IOMode(ReadMode), hClose, openFile)
 
 -- | Produce events for a Kafka topic from a Linux Joystick.
 joystickLoop :: FilePath                    -- ^ The path to the joystick device, e.g. "\/dev\/input\/js0".
-             -> KafkaClientId               -- ^ A Kafka client identifier for the producer.
-             -> KafkaAddress                -- ^ The address of the Kafka broker.
-             -> TopicName                   -- ^ The Kafka topic name.
+             -> TopicConnection             -- ^ The Kafka topic name and connection information.
              -> Sensor                      -- ^ The name of the sensor producing events.
              -> IO (ExitAction, LoopAction) -- ^ Action to create the exit and loop actions.
-joystickLoop path client address topic sensor =
+joystickLoop path topicConnection sensor =
   do
     joystick <- openFile path ReadMode
     (exit, loop) <-
-      producerLoop client address topic sensor
+      producerLoop topicConnection sensor
         $ translate
         . interpretJoystick
         <$> hGet joystick byteLength

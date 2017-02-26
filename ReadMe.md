@@ -7,8 +7,9 @@ This package contains functions for passing [Linux joystick](https://www.kernel.
 Clients
 -------
 
-The simple Kafka client that produces events from the joystick can be run, for example, as follows:
+The simple Kafka client that produces events from the joystick can be run, for example, as one of the following:
 
 	cabal run kafka-device-joystick -- /dev/input/js0 joystick-client localhost 9092 events joystick
+	cabal run kafka-device-joystick -- sample.yaml
 
 Also see https://hackage.haskell.org/package/kafka-device/.
