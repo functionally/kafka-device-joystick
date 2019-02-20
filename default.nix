@@ -4,7 +4,7 @@
 }:
 
 mkDerivation {
-  pname = "kafka-device-glut";
+  pname = "kafka-device-joystick";
   version = "1.0.0.0";
   src = ./.;
   isLibrary = true;
