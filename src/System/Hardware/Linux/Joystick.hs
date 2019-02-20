@@ -1,9 +1,9 @@
 {-|
 Module      :  $Header$
-Copyright   :  (c) 2016-17 Brian W Bush
+Copyright   :  (c) 2016-19 Brian W Bush
 License     :  MIT
-Maintainer  :  Brian W Bush <consult@brianwbush.info>
-Stability   :  Experimental
+Maintainer  :  Brian W Bush <code@functionally.io>
+Stability   :  Production
 Portability :  Linux
 
 Interpret events from a Linux joystick, which must conform to the Linux Joystick API \<<https://www.kernel.org/doc/Documentation/input/joystick-api.txt>\>.
@@ -60,9 +60,9 @@ byteLength =
 data RawJoystick =
   RawJoystick
   {
-    rawTime :: Word32
-  , rawValue :: Word16
-  , rawType  :: Word8
+    rawTime   :: Word32
+  , rawValue  :: Word16
+  , rawType   :: Word8
   , rawNumber :: Word8
   }
   deriving (Eq, Ord, Read, Show)
@@ -115,8 +115,8 @@ interpretJoystick x =
     value = twosComplement rawValue
     number = fromIntegral rawNumber
     typ = fromIntegral rawType :: Int
-    button = 0x01 .&. typ /= 0
-    axis = 0x02 .&. typ /= 0
+    button  = 0x01 .&. typ /= 0
+    axis    = 0x02 .&. typ /= 0
     initial = 0x80 .&. typ /= 0
   in
     Joystick{..}

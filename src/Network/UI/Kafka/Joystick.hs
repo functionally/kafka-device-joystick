@@ -1,9 +1,9 @@
 {-|
 Module      :  $Header$
-Copyright   :  (c) 2016-17 Brian W Bush
+Copyright   :  (c) 2016-19 Brian W Bush
 License     :  MIT
-Maintainer  :  Brian W Bush <consult@brianwbush.info>
-Stability   :  Experimental
+Maintainer  :  Brian W Bush <code@functionally.io>
+Stability   :  Production
 Portability :  Linux
 
 Produce events for a Kafka topic from a Linux joystick, which must conform to the Linux Joystick API \<<https://www.kernel.org/doc/Documentation/input/joystick-api.txt>\>.
