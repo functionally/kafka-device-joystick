@@ -3,7 +3,7 @@ kafka       :
   address   : [localhost, 9092]
   topic     : events
 sensor      : joystick
-path        : /dev/input/js0
+device      : /dev/input/js0
 xAxis       :
   axisNumber: 0
   increment : 0.020
